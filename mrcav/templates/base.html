@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        {% block head %}
+        <title>{% block title %}{% endblock %} - Mr. Cavalier</title>
+
+        <!-- Bootstrap -->
+        <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet" media="screen">
+
+        <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css" rel="stylesheet">
+        <script src="http://code.jquery.com/jquery-latest.js"></script>
+        <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+
+        <!-- fonts -->
+        <link href='http://fonts.googleapis.com/css?family=Kameron|Tangerine' rel='stylesheet' type='text/css'>
+
+        <style>
+            body, html {
+                height: 100%;
+            }
+
+            body {
+                font-family: 'Ubuntu', sans-serif;
+                
+                background-repeat: repeat;
+                background-color: #EEE;
+                color: #111;
+            }
+
+            .navbar {
+                font-family: 'Tangerine', serif;
+                font-size: 20px;
+                font-weight: bold;
+                letter-spacing: 3px;
+                color: #222;
+            }
+            
+            .navbar-right {
+                margin-top: 10px;
+                padding-right: 10px;
+                font-weight: normal;
+            }
+
+            .footer {
+                margin-top: 10px;
+                width: 100%;
+                height: 60px;
+                background-color: #222;
+                text-align: center;
+                color: #ddd;
+            }
+
+            #wrap {
+                min-height: 100%;
+                height: auto !important;
+                height: 100%;
+                /* Negative indent footer by its height */
+                margin: 0 auto -60px;
+                /* Pad bottom by footer height */
+                padding: 0 0 60px;
+                padding-top: 70px;
+            }
+
+            .divider {
+                padding: 20px;
+            }
+
+            a {
+                color: #777;
+            }
+
+            
+            
+
+            .alert {
+                text-align: center;
+                max-width: 40%;
+                margin: 0px auto;
+            }
+            
+            /* Chrome, Safari, Opera */
+            @-webkit-keyframes fade {
+                0%   {top:40px; opacity: 0.0;}
+            25%   {top:30px; opacity: 0.2;}
+            50%  {top:20px; opacity: 0.4;}
+            75%   {top:10px; opacity: 0.6;}
+            100%  {top: 0px; opacity: 0.8;}
+            }
+
+            /* Standard syntax */
+            @keyframes fade {
+                0%   {top:40px; opacity: 0.0;}
+            25%   {top:30px; opacity: 0.2;}
+            50%  {top:20px; opacity: 0.4;}
+            75%   {top:10px; opacity: 0.6;}
+            100%  {top: 0px; opacity: 0.8;}
+            }
+
+
+        </style>
+
+
+        <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+        <!--[if lt IE 9]>
+          <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+          <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+        <![endif]-->
+        {% endblock %}
+    </head>
+
+
+    <body>
+
+        <div id="wrap">
+
+        <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+            <div class="container-fluid">
+                <!-- Brand and toggle get grouped for better mobile display -->
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="/">Mr. Cavalier</a>
+                </div>
+
+                <!-- Collect the nav links, forms, and other content for toggling -->
+                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+
+                    <ul class="nav navbar-nav navbar-right">
+                        {% if session["judge"] %}
+                        {{ session["judge"] }}
+                        {% endif %}
+                    </ul>
+                </div><!-- /.navbar-collapse -->
+            </div><!-- /.container-fluid -->
+        </nav>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        {% for category, message in messages %}
+        <div class="alert alert-{{ category }} alert-dismissible" role="alert">
+            <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button> 
+            {{ message }}
+        </div>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+
+
+        <div id="content" class="container-fluid">
+            {% block content %}{% endblock %}
+        </div>
+        </div>
+
+        <div class="footer">
+            <div class="container-fluid">
+                
+            </div>
+        </div>
+
+
+
+
+
+    </body>
+
+</html>

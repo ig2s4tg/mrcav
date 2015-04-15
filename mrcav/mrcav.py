@@ -21,70 +21,130 @@ app.secret_key = 'QWERTYUIOPASDFGHJKLZXCVBNM'
       ********************************
 """
 
-class User(db.Model):
+class ScoreSheet(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    firstname = db.Column(db.String(30))
-    lastname = db.Column(db.String(30))
-    email = db.Column(db.String(50), unique=True)
-    pwhash = db.Column(db.Binary(20)) #use hex and unhex
-    schedID = db.Column(db.ForeignKey('schedule.id'))
+    judge = db.Column(db.String(20))
+    cont = db.Column(db.String(20))
+    finished = db.Column(db.Boolean)
 
-    def __init__(self, first, last, mail, pw):
-        self.firstname = first
-        self.lastname = last
-        self.email = mail
-        self.pwhash = generate_password_hash(pw)
-        self.schedID = 0;
+    #Appearance
+    a_style = db.Column(db.Integer)
+    a_wellg = db.Column(db.Integer)
+    a_prof = db.Column(db.Integer)
 
-    def check_password(self, password):
-        return check_password_hash(self.pwhash, password)
+    #Poise
+    p_posture = db.Column(db.Integer)
+    p_smile = db.Column(db.Integer)
+    p_geye = db.Column(db.Integer)
+    p_conf = db.Column(db.Integer)
+    p_walk = db.Column(db.Integer)
 
-    def set_schedule(self, id):
-        self.schedID = id
+    #Dance
+    d_grace = db.Column(db.Integer)
+    d_rythm = db.Column(db.Integer)
+    d_smile = db.Column(db.Integer)
+    d_conf = db.Column(db.Integer)
+
+    #Talent
+    t_creat = db.Column(db.Integer)
+    t_tech = db.Column(db.Integer)
+    t_exec = db.Column(db.Integer)
+    t_over = db.Column(db.Integer)
+
+    #Crowd response
+    c_spirit = db.Column(db.Integer)
+    c_appl = db.Column(db.Integer)
+
+    def __init__(self, judge, cont):
+        self.judge = judge
+        self.cont = cont
+        self.finished = False
+        self.a_style = 0
+        self.a_wellg = 0
+        self.a_prof = 0
+        self.p_posture = 0
+        self.p_smile = 0
+        self.p_geye = 0
+        self.p_conf = 0
+        self.p_walk = 0
+        self.d_grace = 0
+        self.d_rythm = 0
+        self.d_smile = 0
+        self.d_conf = 0
+        self.t_creat = 0
+        self.t_tech = 0
+        self.t_exec = 0
+        self.t_over = 0
+        self.c_spirit = 0
+        self.c_appl = 0
         db.session.commit()
 
 
-class Schedule(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    period1 = db.Column(db.ForeignKey('class.id'))
-    period2 = db.Column(db.ForeignKey('class.id'))
-    period3 = db.Column(db.ForeignKey('class.id'))
-    period4 = db.Column(db.ForeignKey('class.id'))
-    period5 = db.Column(db.ForeignKey('class.id'))
-    period6 = db.Column(db.ForeignKey('class.id'))
-    period7 = db.Column(db.ForeignKey('class.id'))
+    #sum each category and multiply by the multiplier
+    def calc_a(self): return (self.a_style + self.a_wellg + self.a_prof)                                * 0.2
+    def calc_p(self): return (self.p_posture + self.p_smile + self.p_geye + self.p_conf + self.p_walk)  * 0.2
+    def calc_d(self): return (self.d_grace + self.d_rythm + self.d_smile + self.d_conf)                 * 0.1
+    def calc_t(self): return (self.t_creat + self.t_tech + self.t_exec + self.t_over)                   * 0.4
+    def calc_c(self): return (self.c_spirit + self.c_appl)                                              * 0.1
 
-    def __init__(self, fir, sec, thi, fou, fif, six, sev):
-        self.period1 = fir
-        self.period2 = sec
-        self.period3 = thi
-        self.period4 = fou
-        self.period5 = fif
-        self.period6 = six
-        self.period7 = sev
+    def calc_total(self):
+        return self.calc_a() + self.calc_p() + self.calc_d() + self.calc_t() + self.calc_c()
 
-    def change_sched(self, fir, sec, thi, fou, fif, six, sev):
-        self.period1 = fir
-        self.period2 = sec
-        self.period3 = thi
-        self.period4 = fou
-        self.period5 = fif
-        self.period6 = six
-        self.period7 = sev
+    def set_a(self, style, wellg, prof):
+        self.a_style = style
+        self.a_wellg = wellg
+        self.a_prof = prof
+        db.session.commit()
+
+    def set_p(self, posture, smile, geye, conf, walk):
+        self.p_posture = posture
+        self.p_smile = smile
+        self.p_geye = geye
+        self.p_conf = conf
+        self.p_walk = walk
+        db.session.commit()
+
+    def set_d(self, grace, rythm, smile, conf):
+        self.d_grace = grace
+        self.d_rythm = rythm
+        self.d_smile = smile
+        self.d_conf = conf
+        db.session.commit()
+
+    def set_t(self, creat, tech, _exec, over): #too late to change it
+        self.t_creat = creat
+        self.t_tech = tech
+        self.t_exec = _exec
+        self.t_over = over
+        db.session.commit()
+
+    def set_c(self, spirit, appl):
+        c_spirit = spirit
+        c_appl = appl
+        db.session.commit()
+
+    def is_fin(self): #I'm so sorry
+        for x in [self.a_style, self.a_wellg, self.a_prof]:
+            if (x == 0): return False
+
+        for x in [self.p_posture + self.p_smile + self.p_geye + self.p_conf + self.p_walk]:
+            if (x == 0): return False
+
+        for x in [self.d_grace + self.d_rythm + self.d_smile + self.d_conf]:
+            if (x == 0): return False
+
+        for x in [self.t_creat + self.t_tech + self.t_exec + self.t_over]:
+            if (x == 0): return False
+
+        for x in [self.c_spirit + self.c_appl]:
+            if (x == 0): return False
+
+        return True
 
 
-class Class(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    teacher = db.Column(db.String(20))
-    classname = db.Column(db.String(30))
-    dif = db.Column(db.String(10))
-    period = db.Column(db.Integer)
 
-    def __init__(self, teach, cn, df, per):
-        self.teacher = teach
-        self.classname = cn
-        self.dif = df
-        self.period = per
+
+
 
 """
       *********************************
@@ -92,10 +152,12 @@ class Class(db.Model):
       *********************************
 """
 
-@app.route('/')
+@app.route('/', methods=['GET','POST'])
 @mobile_template('{mobile/}index.html')
 def index(template):
     form = LoginForm(request.form)
+    if request.method == 'POST' and form.validate():
+        flash(form.login.data + "!", "success")
     return render_template(template, form=form)
 
 

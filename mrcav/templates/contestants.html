@@ -1,0 +1,121 @@
+{% extends "base.html" %}
+{% block title %}Home{% endblock %}
+
+{% block head %}
+{{ super() }}
+<style type="text/css">
+    form {
+        color: #111;
+        text-align: center;
+        margin:
+    }
+
+    input {
+        margin: 5px;
+    }
+
+    .col-md-4:hover {
+        color: #eef;
+    }
+
+    .image-text {
+        text-align: center;
+        font-size: 40px;
+    }
+
+    i {
+        font-size: 100px;
+        padding-bottom: 10px;
+    }
+
+    #main {
+        font-family: Tangerine;
+
+    }
+
+    h1 {
+        text-align: center;
+        font-size: 130px;
+        
+        /* Chrome, Safari, Opera */
+        -webkit-animation-name: fade;
+        -webkit-animation-duration: .7s;
+        /* Standard syntax */
+        animation-name: fade;
+        animation-delay: .7s;
+    }
+    
+    form {
+        font-family: Kameron;
+        text-align: center;
+        font-size: 30px;
+        /* Chrome, Safari, Opera */
+        -webkit-animation-name: fade;
+        -webkit-animation-duration: .7s;
+        /* Standard syntax */
+        animation-name: fade;
+        animation-delay: .7s;
+    } 
+
+    #wrapper {
+        margin-left: 200px;
+        margin-right: 200px;
+    }
+    
+    li {
+        padding-left: 20px;
+        display: inline;
+    }
+
+    /* Chrome, Safari, Opera */
+    @-webkit-keyframes fade {
+        0%   {top:0px; opacity: 0.0;}
+        25%   {top:10px; opacity: 0.25;}
+        50%  {top:20px; opacity: 0.5;}
+        75%   {top:30px; opacity: 0.75;}
+        100%  {top:40px; opacity: 1.0;}
+    }
+
+    /* Standard syntax */
+    @keyframes fade {
+        0%   {top:40px; opacity: 0.0;}
+        25%   {top:30px; opacity: 0.25;}
+        50%  {top:20px; opacity: 0.5;}
+        75%   {top:10px; opacity: 0.75;}
+        100%  {top: 0px; opacity: 1.0;}
+    }
+    
+    /* Chrome, Safari, Opera */
+    @-webkit-keyframes fade2 {
+        0%   {top:40px; opacity: 0.0;}
+        70%   {top:30px; opacity: 0.25;}
+        80%  {top:20px; opacity: 0.5;}
+        90%   {top:10px; opacity: 0.75;}
+        100%  {top: 0px; opacity: 1.0;}
+    }
+
+    /* Standard syntax */
+    @keyframes fade2 {
+        0%   {top:40px; opacity: 0.0;}
+        70%   {top:30px; opacity: 0.25;}
+        80%  {top:20px; opacity: 0.5;}
+        90%   {top:10px; opacity: 0.75;}
+        100%  {top: 0px; opacity: 1.0;}
+    }
+
+</style>
+{% endblock %}
+{% block content %}
+<div id="wrapper-ws">
+    <div id="main" class="container-fluid">
+        <h1>Mr. Cavalier 2015</h1>
+        <form action="" method="post" name="login" class="container-fluid">
+    <p>
+        Please enter your passcode <br>
+        <br>
+    </p>
+    <p><input type="submit" value="Log In"></p>
+    </form>
+    </div>
+</div>
+{% endblock %}

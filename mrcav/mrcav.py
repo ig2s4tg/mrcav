@@ -14,6 +14,12 @@ db = SQLAlchemy(app)
 
 app.secret_key = 'QWERTYUIOPASDFGHJKLZXCVBNM'
 
+j1pass = "a2345"
+j2pass = "s2345"
+j3pass = "d2345"
+j4pass = "f2345"
+j5pass = "g2345"
+
 
 """
       ********************************
@@ -157,7 +163,42 @@ class ScoreSheet(db.Model):
 def index(template):
     form = LoginForm(request.form)
     if request.method == 'POST' and form.validate():
-        flash(form.login.data + "!", "success")
+        if (form.login.data == j1pass):
+            session["judge"] = "j1"
+            flash("Logged in as !", "success")
+            return redirect(url_for('cont'))
+        elif (form.login.data == j2pass):
+            session["judge"] = "j2"
+            flash("Logged in as !", "success")
+            return redirect(url_for('cont'))
+        elif (form.login.data == j3pass):
+            session["judge"] = "j3"
+            flash("Logged in as !", "success")
+            return redirect(url_for('cont'))
+        elif (form.login.data == j4pass):
+            session["judge"] = "j4"
+            flash("Logged in as !", "success")
+            return redirect(url_for('cont'))
+        elif (form.login.data == j5pass):
+            session["judge"] = "j5"
+            flash("Logged in as !", "success")
+            return redirect(url_for('cont'))
+        else:
+            flash("incorrect passcode!", "danger")
+    return render_template(template, form=form)
+
+@app.route('/contestants/')
+@mobile_template('{mobile/}contestants.html')
+def cont(template):
+    if "judge" in session:
+        return render_template(template)
+    else:
+        return "You need to be logged in to access this page"
+
+@app.route('/score/<name>')
+@mobile_template('{mobile/}score.html')
+def score(template):
+
     return render_template(template, form=form)
 
 

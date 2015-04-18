@@ -1,9 +1,10 @@
-from flask import Flask, render_template, redirect, request, session, url_for, flash
+from flask import Flask, render_template, redirect, request, session, url_for, flash, jsonify
 from flask.ext.sqlalchemy import SQLAlchemy
 from flask.ext.mobility import Mobility
 from flask.ext.mobility.decorators import mobile_template
 from werkzeug.security import generate_password_hash, \
      check_password_hash
+
 
 from forms import *
 
@@ -14,11 +15,11 @@ db = SQLAlchemy(app)
 
 app.secret_key = 'QWERTYUIOPASDFGHJKLZXCVBNM'
 
-j1pass = "a2345"
-j2pass = "s2345"
-j3pass = "d2345"
-j4pass = "f2345"
-j5pass = "g2345"
+j1pass = "apple1"   #waters
+j2pass = "pear2"    #kyle
+j3pass = "grape3"   #george
+j4pass = "banana4"  #unfried
+j5pass = "cherry5"  #guest
 
 
 """
@@ -125,8 +126,8 @@ class ScoreSheet(db.Model):
         db.session.commit()
 
     def set_c(self, spirit, appl):
-        c_spirit = spirit
-        c_appl = appl
+        self.c_spirit = spirit
+        self.c_appl = appl
         db.session.commit()
 
     def is_fin(self): #I'm so sorry
@@ -147,6 +148,42 @@ class ScoreSheet(db.Model):
 
         return True
 
+    def serialize(self):
+        return {
+            'id' : self.id,
+            'judge' : self.judge,
+            'cont' :  self.cont,
+            'finished' :  self.finished,
+
+            #Appearance
+            'a_style' :  self.a_style,
+            'a_wellg' :  self.a_wellg,
+            'a_prof' :  self.a_prof,
+
+            #Poise
+            'p_posture' :  self.p_posture,
+            'p_smile' :  self.p_smile,
+            'p_geye' :  self.p_geye,
+            'p_conf' :  self.p_conf,
+            'p_walk' :  self.p_walk,
+
+            #Dance
+            'd_grace' :  self.d_grace,
+            'd_rythm' :  self.d_rythm,
+            'd_smile' :  self.d_smile,
+            'd_conf' :  self.d_conf,
+
+            #Talent
+            't_creat' :  self.t_creat,
+            't_tech' :  self.t_tech,
+            't_exec' :  self.t_exec,
+            't_over' : self.t_over,
+
+            #Crowd response
+            'c_spirit ' :  self.c_spirit,
+            'c_appl ' :  self.c_appl
+        }
+
 
 
 
@@ -161,31 +198,51 @@ class ScoreSheet(db.Model):
 @app.route('/', methods=['GET','POST'])
 @mobile_template('{mobile/}index.html')
 def index(template):
+    if session["judge"]:
+        return redirect(url_for('cont'))
     form = LoginForm(request.form)
-    if request.method == 'POST' and form.validate():
-        if (form.login.data == j1pass):
-            session["judge"] = "j1"
-            flash("Logged in as !", "success")
+    if request.method == 'POST':
+        if (form.login.data == "change_me"):
+            session["judge"] = "admin"
+            flash("Logged in as admin!", "success")
+            return redirect(url_for('totals'))
+
+        elif (form.login.data == j1pass):
+            session["judge"] = "waters"
+            flash("Logged in as Waters!", "success")
             return redirect(url_for('cont'))
+
         elif (form.login.data == j2pass):
-            session["judge"] = "j2"
-            flash("Logged in as !", "success")
+            session["judge"] = "kyle"
+            flash("Logged in as Kyle!", "success")
             return redirect(url_for('cont'))
+
         elif (form.login.data == j3pass):
-            session["judge"] = "j3"
-            flash("Logged in as !", "success")
+            session["judge"] = "george"
+            flash("Logged in as George!", "success")
             return redirect(url_for('cont'))
+
         elif (form.login.data == j4pass):
-            session["judge"] = "j4"
-            flash("Logged in as !", "success")
+            session["judge"] = "unfried"
+            flash("Logged in as Unfried!", "success")
             return redirect(url_for('cont'))
+
         elif (form.login.data == j5pass):
-            session["judge"] = "j5"
-            flash("Logged in as !", "success")
+            session["judge"] = "guest"
+            flash("Logged in as guest judge!", "success")
             return redirect(url_for('cont'))
         else:
             flash("incorrect passcode!", "danger")
     return render_template(template, form=form)
+
+@app.route('/logout/')
+@mobile_template('{mobile/}logout.html')
+def logout(template):
+    if session["judge"]:
+        session["judge"] = None
+        flash("logged out", "info")
+    return redirect(url_for('index'))
+
 
 @app.route('/contestants/')
 @mobile_template('{mobile/}contestants.html')
@@ -195,11 +252,103 @@ def cont(template):
     else:
         return "You need to be logged in to access this page"
 
-@app.route('/score/<name>')
+@app.route('/score/<name>', methods=['GET','POST'])
 @mobile_template('{mobile/}score.html')
-def score(template):
+def score(template, name):
+    form = ScoreForm()
+    if request.method == 'POST':
+        if ScoreSheet.query.filter_by(judge=session["judge"]).filter_by(cont=name).first() is None:
+            new_sheet = ScoreSheet(session["judge"], name)
+            db.session.add(new_sheet)
+            db.session.commit()
+
+        ScoreSheet.query.filter_by(judge=session["judge"]).filter_by(cont=name).first().set_a(form.a_style.data, form.a_wellg.data, form.a_prof.data)
+        ScoreSheet.query.filter_by(judge=session["judge"]).filter_by(cont=name).first().set_p(form.p_posture.data, form.p_smile.data, form.p_geye.data, form.p_conf.data, form.p_walk.data)
+        ScoreSheet.query.filter_by(judge=session["judge"]).filter_by(cont=name).first().set_d(form.d_grace.data, form.d_rythm.data, form.d_smile.data, form.d_conf.data)
+        ScoreSheet.query.filter_by(judge=session["judge"]).filter_by(cont=name).first().set_t(form.t_creat.data, form.t_tech.data, form.t_exec.data, form.t_over.data)
+        ScoreSheet.query.filter_by(judge=session["judge"]).filter_by(cont=name).first().set_c(form.c_spirit.data, form.c_appl.data)
+        return redirect(url_for('cont'))
 
     return render_template(template, form=form)
+
+@app.route('/totals/')
+@mobile_template('{mobile/}totals.html')
+def totals(template):
+    if session["judge"] != "admin":
+        return "You don't have permission to access this page. Ask Walter for the passcode"
+    data = ScoreSheet.query.all()
+    return render_template(template, data=data)
+
+@app.route('/data/<name>')
+@mobile_template('{mobile/}data.html')
+def data(template, name):
+    if ScoreSheet.query.filter_by(judge=session["judge"], cont=name).first():
+        return jsonify(ScoreSheet.query.filter_by(judge=session["judge"], cont=name).first().serialize())
+    return ""
+
+@app.route('/getdone/')
+@mobile_template('{mobile/}done.html')
+def getdone(template):
+
+    aakash = False
+    andre =  False
+    andrew = False
+    austin = False
+    ben = False
+    charlie = False
+    chris = False
+    colton = False
+    connor = False
+    paul = False
+    pedro = False
+    scott = False
+    tyler = False
+
+    if ScoreSheet.query.filter_by(judge=session["judge"], cont="aakash").first():
+        aakash = ScoreSheet.query.filter_by(judge=session["judge"], cont="aakash").first().is_fin()
+    if ScoreSheet.query.filter_by(judge=session["judge"], cont="andre").first():
+        andre =  ScoreSheet.query.filter_by(judge=session["judge"], cont="andre").first().is_fin()
+    if ScoreSheet.query.filter_by(judge=session["judge"], cont="andrew").first():
+        andrew = ScoreSheet.query.filter_by(judge=session["judge"], cont="andrew").first().is_fin()
+    if ScoreSheet.query.filter_by(judge=session["judge"], cont="austin").first():
+        austin = ScoreSheet.query.filter_by(judge=session["judge"], cont="austin").first().is_fin()
+    if ScoreSheet.query.filter_by(judge=session["judge"], cont="ben").first():
+        ben = ScoreSheet.query.filter_by(judge=session["judge"], cont="ben").first().is_fin()
+    if ScoreSheet.query.filter_by(judge=session["judge"], cont="charlie").first():
+        charlie = ScoreSheet.query.filter_by(judge=session["judge"], cont="charlie").first().is_fin()
+    if ScoreSheet.query.filter_by(judge=session["judge"], cont="chris").first():
+        chris = ScoreSheet.query.filter_by(judge=session["judge"], cont="chris").first().is_fin()
+    if ScoreSheet.query.filter_by(judge=session["judge"], cont="colton").first():
+        colton = ScoreSheet.query.filter_by(judge=session["judge"], cont="colton").first().is_fin()
+    if ScoreSheet.query.filter_by(judge=session["judge"], cont="connor").first():
+        connor = ScoreSheet.query.filter_by(judge=session["judge"], cont="connor").first().is_fin()
+    if ScoreSheet.query.filter_by(judge=session["judge"], cont="paul").first():
+        paul = ScoreSheet.query.filter_by(judge=session["judge"], cont="paul").first().is_fin()
+    if ScoreSheet.query.filter_by(judge=session["judge"], cont="pedro").first():
+        pedro = ScoreSheet.query.filter_by(judge=session["judge"], cont="pedro").first().is_fin()
+    if ScoreSheet.query.filter_by(judge=session["judge"], cont="scott").first():
+        scott = ScoreSheet.query.filter_by(judge=session["judge"], cont="scott").first().is_fin()
+    if ScoreSheet.query.filter_by(judge=session["judge"], cont="tyler").first():
+        tyler = ScoreSheet.query.filter_by(judge=session["judge"], cont="tyler").first().is_fin()
+
+    return jsonify({
+        'aakash' : aakash,
+        'andre'  :  andre,
+        'andrew' : andrew,
+        'austin' : austin,
+        'ben' : ben,
+        'charlie' : charlie,
+        'chris' : chris,
+        'colton' : colton,
+        'connor' : connor,
+        'paul' : paul,
+        'pedro' : pedro,
+        'scott' : scott,
+        'tyler' : tyler
+        }
+    )
+
+
 
 
 

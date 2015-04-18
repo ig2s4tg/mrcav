@@ -5,7 +5,7 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         {% block head %}
-        <title>{% block title %}{% endblock %} - Nerds Reborn</title>
+        <title>{% block title %}{% endblock %} - Mr. Cavalier</title>
 
         <!-- Bootstrap -->
         <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet" media="screen">
@@ -15,7 +15,7 @@
         <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
 
         <!-- fonts -->
-        <link href='http://fonts.googleapis.com/css?family=Ubuntu|Tangerine' rel='stylesheet' type='text/css'>
+        <link href='http://fonts.googleapis.com/css?family=Kameron|Tangerine' rel='stylesheet' type='text/css'>
 
         <style>
             body, html {
@@ -23,17 +23,25 @@
             }
 
             body {
-                font-family: 'Ubuntu', sans-serif;
-                background-image: url('http://i.imgur.com/wFC8faU.png');
+                font-family: 'Kameron';
+                
                 background-repeat: repeat;
-                background-color: #222;
-                color: #ddd;
+                background-color: #EEE;
+                color: #111;
             }
 
-            .navbar-brand {
-                font-family: 'Ubuntu', sans-serif;
+            .navbar {
+                font-family: 'Tangerine', serif;
+                font-size: 20px;
                 font-weight: bold;
                 letter-spacing: 3px;
+                color: #222;
+            }
+            
+            .navbar-right {
+                margin-top: 10px;
+                padding-right: 10px;
+                font-weight: normal;
             }
 
             .footer {
@@ -62,30 +70,15 @@
 
             a {
                 color: #777;
+                font-size: 15px;
+            }
+            
+            ul {
+                font-family: 'Kameron';
             }
 
-            .twitter-share-button {
-                vertical-align: middle;
-            }
-
-            .fb-share-button {
-
-            }
-
-            .dropdown i {
-                font-size: 1em;
-                float: right;
-            }
-
-            #content {
-                
-                /* Chrome, Safari, Opera */
-                -webkit-animation-name: fade;
-                -webkit-animation-duration: .3s;
-                /* Standard syntax */
-                animation-name: fade;
-                animation-delay: .3s;
-            }
+            
+            
 
             .alert {
                 text-align: center;
@@ -93,11 +86,6 @@
                 margin: 0px auto;
             }
             
-            .twitter-share-button, .facebook-share-button {
-                
-                display: inline;
-            }
-
             /* Chrome, Safari, Opera */
             @-webkit-keyframes fade {
                 0%   {top:40px; opacity: 0.0;}
@@ -134,7 +122,7 @@
 
         <div id="wrap">
 
-        <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+        <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
             <div class="container-fluid">
                 <!-- Brand and toggle get grouped for better mobile display -->
                 <div class="navbar-header">
@@ -144,25 +132,16 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <a class="navbar-brand" href="/">Nerds Reborn</a>
+                    <a class="navbar-brand" href="/">Mr. Cavalier</a>
                 </div>
 
                 <!-- Collect the nav links, forms, and other content for toggling -->
                 <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 
                     <ul class="nav navbar-nav navbar-right">
-                        {% if not session["user_id"] %}
-                        <li><a href="/login/">Sign In</a></li>
-                        <li><a href="/register/">Sign Up</a></li>
-                        {% else %}
-                        <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="glyphicon glyphicon-user" style="float: left;"></i> &nbsp; {{ session["firstlast"] }} <span class="caret"></span></a>
-                            <ul class="dropdown-menu" role="menu">
-                                <li><a href="/user/{{session.user_id}}" > my classes &nbsp;&nbsp; <i class="glyphicon glyphicon-list-alt"></i></a></li>
-                                <li class="divider2"></li>
-                                <li><a href="/logout/">  log out &nbsp;&nbsp; <i class="glyphicon glyphicon-log-out"></i></a></li>
-                            </ul>
-                        </li>
+                        {% if session["judge"] %}
+                        {{ session["judge"] }} 
+                        <a href="/logout/">(log out)</a>
                         {% endif %}
                     </ul>
                 </div><!-- /.navbar-collapse -->
@@ -188,24 +167,7 @@
 
         <div class="footer">
             <div class="container-fluid">
-                <a href="/">home</a>
-                <span class="divider">.</span>
-                <a href="/about/">about</a>
-                <span class="divider">.</span>
-                <a href="mailto:wsagehorn@gmail.com">contact</a>
-                <span class="divider">.</span>
-                <span class="fb-share-button" data-href="http://nerds.waltersagehorn.com/"></span>
-                <span class="divider">.</span>
-                <a href="https://twitter.com/share" class="twitter-share-button" data-url="http://nerds.waltersagehorn.com/" data-text="Compare classes using Nerds Reborn.">Tweet</a>
-                <script>!function(d, s, id) {
-                        var js, fjs = d.getElementsByTagName(s)[0], p = /^http:/.test(d.location) ? 'http' : 'https';
-                        if (!d.getElementById(id)) {
-                            js = d.createElement(s);
-                            js.id = id;
-                            js.src = p + '://platform.twitter.com/widgets.js';
-                            fjs.parentNode.insertBefore(js, fjs);
-                        }
-                    }(document, 'script', 'twitter-wjs');</script>
+                
             </div>
         </div>
 

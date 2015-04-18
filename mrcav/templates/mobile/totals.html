@@ -27,6 +27,10 @@
         font-size: 100px;
         padding-bottom: 10px;
     }
+    
+    .scoresheet {
+        font-family: Kameron;
+    }
 
     #main {
         font-family: Tangerine;
@@ -108,14 +112,14 @@
 {% block content %}
 <div id="wrapper-ws">
     <div id="main" class="container-fluid">
-        <h1>Mr. Cavalier 2015</h1>
-        <form action="" method="post" name="login" class="container-fluid">
-    <p>
-        Please enter your passcode <br>
-        {{form.login()}}<br>
-    </p>
-    <p><input type="submit" value="Log In"></p>
-    </form>
+        <h1>Mr. Cavalier 2015 Totals</h1>
+        {% if data %}
+        {% for datum in data %}
+            <div class="scoresheet">
+            {{ datum.cont }} : {{ datum.judge }} : {{ datum.calc_total() }} <br> <br>
+            </div>
+        {% endfor %}
+        {% endif %}
     </div>
 </div>
 {% endblock %}

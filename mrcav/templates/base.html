@@ -23,7 +23,7 @@
             }
 
             body {
-                font-family: 'Ubuntu', sans-serif;
+                font-family: 'Kameron';
                 
                 background-repeat: repeat;
                 background-color: #EEE;
@@ -70,6 +70,11 @@
 
             a {
                 color: #777;
+                font-size: 15px;
+            }
+            
+            ul {
+                font-family: 'Kameron';
             }
 
             
@@ -135,7 +140,8 @@
 
                     <ul class="nav navbar-nav navbar-right">
                         {% if session["judge"] %}
-                        {{ session["judge"] }}
+                        {{ session["judge"] }} 
+                        <a href="/logout/">(log out)</a>
                         {% endif %}
                     </ul>
                 </div><!-- /.navbar-collapse -->
